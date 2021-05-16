@@ -43,7 +43,7 @@ class GameBoard {
         this.grid[pos].classList.remove(...classes);
     }
 
-    objectExists(pos, object) {
+    objectExist = (pos, object) => {
         return this.grid[pos].classList.contains(object);
     }
 
