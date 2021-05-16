@@ -1,6 +1,7 @@
 import { LEVEL, OBJECT_TYPE } from './setup';
 // classes
 import GameBoard from './GameBoard';
+import Pacman from './Pacman';
 
 // DOM ELEMENTS 
 const gameGrid = document.querySelector('#game');
