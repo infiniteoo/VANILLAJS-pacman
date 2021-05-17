@@ -1,7 +1,9 @@
 import { LEVEL, OBJECT_TYPE } from './setup';
+import { randomMovement } from './ghostMoves';
 // classes
 import GameBoard from './GameBoard';
 import Pacman from './Pacman';
+import Ghost from './Ghost';
 
 // DOM ELEMENTS 
 const gameGrid = document.querySelector('#game');
@@ -25,12 +27,33 @@ function gameOver(pacman, grid) {
 }
 
 function checkCollision(pacman, ghosts) {
+    const collidedGhost = ghosts.find(ghost => pacman.pos === ghost.pos);
+
+
+    if(collidedGhost){
+        if(pacman.powerPill) {
+            gameBoard.removeObject(collidedGhost.pos, [
+                OBJECT_TYPE.GHOST,
+                OBJECT_TYPE.SCARED,
+                collidedGhost.name
+            ]);
+            collidedGhost.pos = collidedGhost.startPos;
+            score += 100;
+        } else {
+            gameBoard.removeObject(pacman.pos, [OBJECT_TYPE.PACMAN]);
+            gameBoard.rotateDiv(pacman.pos, 0);
+            gameOver(pacman, gameGrid);
+        }
+    }
 
 }
 
 function gameLoop(pacman, ghosts) {
 
     gameBoard.moveCharacter(pacman);
+    checkCollision(pacman, ghosts);
+    ghosts.forEach(ghost => gameBoard.moveCharacter(ghost));
+    checkCollion(pacman, ghosts);
     
 }
 
@@ -49,7 +72,16 @@ function startGame() {
        pacman.handleKeyInput(e, gameBoard.objectExist);
    });
 
-   timer = setInterval(() => gameLoop(pacman), GLOBAL_SPEED);
+   const ghosts = [
+       new Ghost(5, 188, randomMovement, OBJECT_TYPE.BLINKY),
+       new Ghost(4, 209, randomMovement, OBJECT_TYPE.PINKY),
+       new Ghost(3, 230, randomMovement, OBJECT_TYPE.INKY),
+       new Ghost(2, 251, randomMovement, OBJECT_TYPE.CLYDE)
+   ]
+
+
+
+   timer = setInterval(() => gameLoop(pacman, ghosts), GLOBAL_SPEED);
 
 
 
